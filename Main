@@ -1,0 +1,171 @@
+// Description: Product program
+// Name:  Samuel Roitblat
+
+#include <iostream>
+#include <fstream> 
+#include <string> 
+#include <iomanip>  
+using namespace std;
+
+struct Division
+{
+string divisionName;
+int q1Sales;
+int q2Sales;    
+int q3Sales;    
+int q4Sales;
+};
+
+struct Corporation
+{
+int totalQ1Sales;
+int totalQ2Sales;
+int totalQ3Sales;
+int totalQ4Sales;
+int numberOfDivisions;
+};
+
+void getDivision(Division*, ifstream &);
+void printDivision(Division*);
+void addDivision(Division*, Corporation*);
+void printCorpSummary(Corporation*, Division*);
+
+
+int main()
+{
+        ifstream infile;
+        infile.open("prog3.txt");
+        
+        if (!infile)
+        {
+                cout << "ERROR - no such file exists!\n";
+        }
+        
+        Corporation* ptrTotalSales = new Corporation;
+        Division* ptrDivisionInfo = new Division;
+
+cout << "----------------------------------------------\n";
+cout << "Division\t\tQ1\t\tQ2\t\tQ3\t\tQ4\n";
+
+(*ptrTotalSales).totalQ1Sales = 0;
+(*ptrTotalSales).totalQ2Sales = 0;
+(*ptrTotalSales).totalQ3Sales = 0;
+(*ptrTotalSales).totalQ4Sales = 0;
+
+        while (!infile.eof())
+        {
+                getDivision(ptrDivisionInfo, infile);
+                printDivision(ptrDivisionInfo);
+                addDivision(ptrDivisionInfo, ptrTotalSales);
+        }
+        infile.close();
+        printCorpSummary(ptrTotalSales, ptrDivisionInfo);
+
+delete ptrTotalSales;
+delete ptrDivisionInfo;
+
+return 0;
+}
+
+void getDivision(Division* ptrDivisionInfo, ifstream &infile)
+{
+        getline(infile, (*ptrDivisionInfo).divisionName);
+                infile >> (*ptrDivisionInfo).q1Sales;
+                infile >> (*ptrDivisionInfo).q2Sales;
+                infile >> (*ptrDivisionInfo).q3Sales;
+                infile >> (*ptrDivisionInfo).q4Sales;
+                infile.ignore();
+}
+
+void printDivision(Division* ptrDivisionInfo)
+{
+        cout << (*ptrDivisionInfo).divisionName << "\t\t" << (*ptrDivisionInfo).q1Sales << "\t\t";
+        cout << (*ptrDivisionInfo).q2Sales << "\t\t" << (*ptrDivisionInfo).q3Sales << "\t\t";
+        cout << (*ptrDivisionInfo).q4Sales << endl;
+
+}
+void addDivision(Division* ptrDivisionInfo, Corporation* ptrTotalSales)
+{
+   (*ptrTotalSales).totalQ1Sales = ptrTotalSales -> totalQ1Sales + (*ptrDivisionInfo).q1Sales;
+   (*ptrTotalSales).totalQ2Sales = (*ptrTotalSales).totalQ2Sales + (*ptrDivisionInfo).q2Sales;
+   (*ptrTotalSales).totalQ3Sales = (*ptrTotalSales).totalQ3Sales + (*ptrDivisionInfo).q3Sales;
+   (*ptrTotalSales).totalQ4Sales = (*ptrTotalSales).totalQ4Sales + (*ptrDivisionInfo).q4Sales;
+   (*ptrTotalSales).numberOfDivisions++;
+}
+
+void printCorpSummary(Corporation* ptrTotalSales, Division* ptrDivisionInfo)
+{
+   cout << "----------------------------------------------------------\n";
+
+        //Display each total quarter sales
+   cout << "Corp Qtr Totals: " << (*ptrTotalSales).totalQ1Sales << "\t";
+   cout << (*ptrTotalSales).totalQ2Sales << "\t";
+   cout << (*ptrTotalSales).totalQ3Sales << "\t";
+   cout << (*ptrTotalSales).totalQ4Sales << endl;
+                
+        //Calculate average quarter sales
+ int averageQ1, averageQ2, averageQ3, averageQ4;
+        
+     averageQ1 = (*ptrTotalSales).totalQ1Sales / (*ptrTotalSales).numberOfDivisions;
+     averageQ2 = (*ptrTotalSales).totalQ2Sales / (*ptrTotalSales).numberOfDivisions;
+     averageQ3 = (*ptrTotalSales).totalQ3Sales / (*ptrTotalSales).numberOfDivisions;
+     averageQ4 = (*ptrTotalSales).totalQ4Sales / (*ptrTotalSales).numberOfDivisions;
+
+        cout << "Average Quartely Sales: " << averageQ1 << "\t\t" << averageQ2;
+        cout << "\t\t" << averageQ3 << "\t\t" << averageQ4 << endl;
+
+//Total Sales
+    int q1 = (*ptrTotalSales).totalQ1Sales;
+    int q2 = (*ptrTotalSales).totalQ2Sales;
+    int q3 = (*ptrTotalSales).totalQ3Sales;
+    int q4 = (*ptrTotalSales).totalQ4Sales;
+    int totalSales = q1 + q2 + q3 + q4;
+        cout << "Total Sales: " << totalSales << endl;
+ 
+//Corporate Highest quarter
+  int highest = 0;
+    for (int i = 0; i <= 4; i++)
+        {
+                if ((*ptrTotalSales).totalQ1Sales > highest)
+                {
+                        highest = (*ptrTotalSales).totalQ1Sales;
+                }
+                else if ((*ptrTotalSales).totalQ2Sales > highest)
+                {
+                        highest = (*ptrTotalSales).totalQ2Sales;
+                }
+                else if ((*ptrTotalSales).totalQ3Sales > highest)
+                {
+ highest = (*ptrTotalSales).totalQ3Sales;
+                }
+                else if ((*ptrTotalSales).totalQ4Sales > highest)
+                {
+                        highest = (*ptrTotalSales).totalQ4Sales;
+                }
+        }
+        
+  int lowest = 999999999;
+    for (int j = 0; j < 4; j++)
+    {
+        if((*ptrTotalSales).totalQ1Sales < lowest)
+        {       
+                lowest = (*ptrTotalSales).totalQ1Sales;
+        }
+        else if ((*ptrTotalSales).totalQ2Sales < lowest)
+        {
+                lowest = (*ptrTotalSales).totalQ2Sales;
+        }
+        else if ((*ptrTotalSales).totalQ3Sales < lowest)
+        {
+                lowest = (*ptrTotalSales).totalQ3Sales;
+        }
+        else if ((*ptrTotalSales).totalQ4Sales < lowest)
+        {
+                lowest = (*ptrTotalSales).totalQ4Sales;
+        }
+    }
+    
+cout << "Corp High Qtr: " << highest << endl;
+cout << "Corp Low Qtr: " << lowest << endl;
+ 
+}
